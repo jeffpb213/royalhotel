@@ -1,8 +1,7 @@
-# Provider configuration: Connect to AWS using credentials from the AWS CLI
+# Provider configuration: Connect to AWS using credentials from AWS CLI
 provider "aws" {
   region = "us-east-1" # Specify AWS region
-  access_key = var.AWS_ACCESS_KEY_ID
-  secret_key = var.AWS_SECRET_ACCESS_KEY
+  # AWS credentials will be automatically picked from the environment variables or CLI configuration
 }
 
 # Create a VPC
@@ -79,24 +78,24 @@ resource "aws_security_group" "allow_ssh" {
 
 # Import your existing key pair or create a new one
 resource "aws_key_pair" "royal_hotel_key" {
-  key_name = "royal_hotel_vm_key"
-  public_key = file("/home/jeffpb213gmail/.ssh/royal_hotel_vm_key.pub")
+  key_name   = "royal_hotel_vm_key"
+  public_key = file("/home/jeffpb213gmail/.ssh/royal_hotel_vm_key.pub") # Ensure this path is correct
 }
 
-# Create an EC2 instance and provisioner to run ansible playbook after VM provisioning
+# Create an EC2 instance
 resource "aws_instance" "sandbox" {
-  ami = "ami-0a5c3558529277641" # Amazon Linux 2 AMI
-  instance_type = "t2.micro" # Free tier eligible
-  key_name = aws_key_pair.royal_hotel_key.key_name
-  subnet_id = aws_subnet.main_subnet.id
-  vpc_security_group_ids = [aws_security_group.allow_ssh.id]
+  ami                         = "ami-0a5c3558529277641" # Amazon Linux 2 AMI
+  instance_type               = "t2.micro" # Free tier eligible
+  key_name                    = aws_key_pair.royal_hotel_key.key_name
+  subnet_id                   = aws_subnet.main_subnet.id
+  vpc_security_group_ids      = [aws_security_group.allow_ssh.id]
   associate_public_ip_address = true
 
   tags = {
     Name = "RoyalHotelSandbox"
   }
 
-  # AWS EC2 Instance Status Check Real-Time Polling
+  # Wait for instance readiness and run Ansible
   provisioner "local-exec" {
     command = <<EOT
       # Initialize variables
