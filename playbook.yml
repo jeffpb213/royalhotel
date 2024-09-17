@@ -1,0 +1,17 @@
+- hosts: all
+  become: yes
+  tasks:
+    - name: Update yum cache
+      yum:
+        update_cache: yes
+
+    - name: Install Apache Web Server
+      yum:
+        name: httpd
+        state: present
+
+    - name: Start Apache Service
+      service:
+        name: httpd
+        state: started
+        enabled: true
