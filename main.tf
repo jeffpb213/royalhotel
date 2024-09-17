@@ -78,7 +78,7 @@ resource "aws_security_group" "allow_ssh" {
 # Import your existing key pair or create a new one
 resource "aws_key_pair" "royal_hotel_key" {
   key_name = "royal_hotel_vm_key"
-  public_key = file("~/.ssh/royal_hotel_vm_key.pub")
+  public_key = file("/home/jenkins/.ssh/royal_hotel_vm_key.pub")
 }
 
 # Create an EC2 instance and provisioner to run ansible playbook after VM provisioning
