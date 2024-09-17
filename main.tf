@@ -1,6 +1,8 @@
 # Provider configuration: Connect to AWS using credentials from the AWS CLI
 provider "aws" {
   region = "us-east-1" # Specify AWS region
+  access_key = AWS_ACCESS_KEY_ID
+  secret_key = AWS_SECRET_ACCESS_KEY
 }
 
 # Create a VPC
